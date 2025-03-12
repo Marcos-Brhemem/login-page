@@ -15,7 +15,7 @@ import { ToastrService } from 'ngx-toastr';
   ],
   providers: [LoginService],
   templateUrl: './signup.component.html',
-  styleUrl: './signup.component.scss'
+  styleUrls: ['./signup.component.scss']
 })
 export class SignupComponent {
   signupForm!: FormGroup; 
@@ -34,10 +34,21 @@ export class SignupComponent {
   }
 
   submit() {
-    this.loginService.login(this.signupForm.value.email, this.signupForm.value.password).subscribe({
-      next: () => this.toastr.success("Login feito com sucesso!"),  
-      error: () => this.toastr.error("Erro inesperado! Tente novamente mais tarde")
-    });
+    if (this.signupForm.valid) {
+      this.loginService.signup(
+        this.signupForm.value.name, 
+        this.signupForm.value.email, 
+        this.signupForm.value.password
+      ).subscribe({
+        next: () => {
+          this.toastr.success("Registered successfully");
+          this.signupForm.reset();
+        },
+        error: () => {
+          this.toastr.error("Unexpected error! Please try again later");
+        }
+      });
+    }
   }
 
   navigate() {
